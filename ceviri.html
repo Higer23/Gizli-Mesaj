@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higer Alfabesi Çevirici | Halil'in Projesi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;family=Orbitron:wght@500;700&amp;display=swap" rel="stylesheet">
+<style type="text/css" id="dcoder_stylesheet">/* --- Genel Sıfırlama ve Temel Ayarlar --- */
+:root {
+    --bg-color: #121212;
+    --panel-bg-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --primary-color: #03dac6; /* Canlı Turkuaz */
+    --primary-variant-color: #018786;
+    --error-color: #cf6679;
+    --border-color: #333;
+    --font-body: 'Roboto', sans-serif;
+    --font-display: 'Orbitron', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-top: 80px; /* Header için boşluk */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- Başlık (Header) --- */
+header {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+header .subtitle {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 0.5rem;
+}
+
+/* --- Ana Konteyner ve Çeviri Panelleri --- */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 1rem;
+}
+
+.translator-panel {
+    background-color: var(--panel-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+}
+
+.translator-panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(3, 218, 198, 0.2);
+}
+
+.translator-panel h2 {
+    font-family: var(--font-display);
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+/* --- Giriş ve Çıkış Alanları --- */
+.input-area {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+    margin-bottom: 1rem;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
+}
+
+.clear-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    opacity: 0.5;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: opacity 0.3s;
+}
+
+.clear-btn:hover {
+    opacity: 1;
+    color: var(--error-color);
+}
+
+
+/* --- Butonlar --- */
+.translate-btn {
+    background-color: var(--primary-color);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.translate-btn:hover {
+    background-color: var(--primary-variant-color);
+    color: var(--text-color);
+    transform: scale(1.02);
+}
+
+.translate-btn:active {
+    transform: scale(0.98);
+}
+
+.output-container {
+    margin-top: auto; /* Panelin en altına iter */
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.output-container h3 {
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.output-box {
+    background-color: var(--bg-color);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 100px;
+    word-wrap: break-word;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    transition: background-color 0.3s;
+}
+
+.output-box.error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.copy-btn {
+    display: block;
+    margin-top: 10px;
+    margin-left: auto;
+    background-color: var(--panel-bg-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.copy-btn:hover {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+/* --- Hamburger Menü ve Kenar Navigasyon --- */
+.hamburger-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-menu span {
+    width: 30px;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: var(--panel-bg-color);
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out, background-color 0.3s;
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.side-nav.active {
+    transform: translateX(0);
+}
+
+.side-nav .nav-header {
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.side-nav .nav-header h3 {
+    font-family: var(--font-display);
+    color: var(--primary-color);
+}
+
+.side-nav ul {
+    list-style: none;
+}
+
+.side-nav ul li a {
+    display: block;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 15px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.side-nav ul li a:hover {
+    background-color: var(--bg-color);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- Alt Bilgi (Footer) ve Alfabe Tablosu --- */
+footer {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--panel-bg-color);
+    transition: background-color 0.3s;
+}
+
+footer h2 {
+    font-family: var(--font-display);
+    margin-bottom: 2rem;
+}
+
+.alphabet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.alphabet-item {
+    background-color: var(--bg-color);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s;
+}
+
+.alphabet-item .char {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.alphabet-item .code {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+
+/* --- YENİ ÖZELLİK: Dosya İşlem Butonları --- */
+.file-operations {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    gap: 10px;
+}
+
+.file-upload-btn, .file-download-btn {
+    flex-grow: 1;
+    padding: 8px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    font-size: 0.9rem;
+}
+
+.file-upload-btn {
+    background-color: var(--panel-bg-color);
+    color: var(--primary-variant-color);
+    border: 1px solid var(--primary-variant-color);
+}
+
+.file-upload-btn:hover {
+    background-color: var(--primary-variant-color);
+    color: var(--text-color);
+}
+
+.file-download-btn {
+    background-color: transparent;
+    color: var(--text-color);
+    opacity: 0.7;
+    border: 1px dashed var(--border-color);
+}
+
+.file-download-btn:hover {
+    opacity: 1;
+    border-color: var(--text-color);
+}
+
+
+/* --- YENİ ÖZELLİK: Sayaç --- */
+.counter {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--text-color);
+    opacity: 0.6;
+    margin-left: 10px;
+}
+
+/* --- YENİ ÖZELLİK: Tema Değiştirici --- */
+.theme-switcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 1rem 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* --- AÇIK TEMA RENKLERİ --- */
+body.light-mode {
+    --bg-color: #f0f2f5;
+    --panel-bg-color: #ffffff;
+    --text-color: #1c1e21;
+    --border-color: #dddfe2;
+    --primary-color: #018786;
+    --primary-variant-color: #03dac6;
+}
+
+body.light-mode .translator-panel {
+     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+body.light-mode .translator-panel:hover {
+     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+body.light-mode textarea, 
+body.light-mode .output-box,
+body.light-mode .alphabet-item {
+    background-color: #f8f9fa;
+}
+body.light-mode .hamburger-menu span {
+    background-color: var(--text-color);
+}
+
+
+/* --- Duyarlılık (Responsive Design) --- */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .translator-panel {
+        max-width: 100%;
+    }
+}
+    </style></head>
+<body>
+
+    <button class="hamburger-menu" id="hamburgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="side-nav" id="sideNav">
+        <div class="nav-header">
+            <h3>Hızlı Erişim</h3>
+        </div>
+        <ul>
+            <li><a href="#" onclick="document.getElementById('turkceInput').focus()">Türkçe Çeviri</a></li>
+            <li><a href="#" onclick="document.getElementById('higerInput').focus()">Higer Çeviri</a></li>
+            <li><a href="#alphabet-table">Alfabe Tablosu</a></li>
+            <li><a href="#">Hakkında</a></li>
+        </ul>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <header>
+        <h1>HİGER ALFABESİ</h1>
+        <div class="theme-switcher">
+            <span>Açık Tema</span>
+            <label class="switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider round"></span>
+            </label>
+            <span>Koyu Tema</span>
+        </div>
+        <p class="subtitle">Halil Tarafından Geliştirilen Özgün Sayısal Dil Sistemi</p>
+    </header>
+
+    <main class="container">
+        <section class="translator-panel">
+            <h2>Türkçeden Şifreli Dile</h2>
+            <div class="input-area">
+                <textarea id="turkceInput" placeholder="Türkçe metni buraya yazın (Örn: MERHABA 12)..."></textarea>
+                <div class="file-operations">
+                    <label for="uploadTurkceFile" class="file-upload-btn">Dosya Yükle (.txt)</label>
+                    <input type="file" id="uploadTurkceFile" accept=".txt" style="display: none;">
+                    <button id="downloadHigerFile" class="file-download-btn">Sonucu İndir (.txt)</button>
+                </div>
+                <button class="clear-btn" onclick="document.getElementById('turkceInput').value=''; document.getElementById('higerOutput').innerText=''; document.getElementById('higerCounter').innerText='';">Temizle</button>
+            </div>
+            <button class="translate-btn" id="encryptBtn">ÇEVİR ᐳ</button>
+            <div class="output-container">
+                <h3>Sonuç: <span class="counter" id="higerCounter"></span></h3>
+                <div class="output-box" id="higerOutput"></div>
+                <button class="copy-btn" id="copyHigerBtn">Kopyala</button>
+            </div>
+        </section>
+
+        <section class="translator-panel">
+            <h2>Şifreli Dilden Türkçeye</h2>
+            <div class="input-area">
+                <textarea id="higerInput" placeholder="Higer kodlarını buraya yazın (Örn: 223.650.502.199.103.287.103.73.91)..."></textarea>
+                <div class="file-operations">
+                    <label for="uploadHigerFile" class="file-upload-btn">Dosya Yükle (.txt)</label>
+                    <input type="file" id="uploadHigerFile" accept=".txt" style="display: none;">
+                    <button id="downloadTurkceFile" class="file-download-btn">Sonucu İndir (.txt)</button>
+                </div>
+                 <button class="clear-btn" onclick="document.getElementById('higerInput').value=''; document.getElementById('turkceOutput').innerText=''; document.getElementById('turkceCounter').innerText='';">Temizle</button>
+            </div>
+            <button class="translate-btn" id="decryptBtn">ᐸ ÇÖZ</button>
+            <div class="output-container">
+                 <h3>Sonuç: <span class="counter" id="turkceCounter"></span></h3>
+                <div class="output-box" id="turkceOutput"></div>
+                <button class="copy-btn" id="copyTurkceBtn">Kopyala</button>
+            </div>
+        </section>
+    </main>
+
+    <footer id="alphabet-table">
+        <h2>Higer Alfabesi Kod Tablosu</h2>
+        <div class="alphabet-grid">
+            </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+<script type="text/javascript" id="dcoder_script">// Tüm DOM yüklendiğinde kodun çalışmasını sağla
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- ALFABE TANIMLAMALARI ---
+    const higerAlphabet = {
+        // Harfler (Türkçe karakterler dahil)
+        'A': '103', 'B': '287', 'C': '914', 'Ç': '555', 'D': '472', 'E': '650', 'F': '388', 
+        'G': '741', 'Ğ': '444', 'H': '199', 'I': '306', 'İ': '333', 'J': '825', 'K': '564', 
+        'L': '901', 'M': '223', 'N': '778', 'O': '410', 'Ö': '666', 'P': '134', 'Q': '689', 
+        'R': '502', 'S': '317', 'Ş': '777', 'T': '849', 'U': '296', 'Ü': '888', 'V': '143', 
+        'W': '970', 'X': '381', 'Y': '228', 'Z': '609',
+        // Rakamlar
+        '0': '84', '1': '73', '2': '91', '3': '62', '4': '55', '5': '48', '6': '36', '7': '27', '8': '19', '9': '03'
+    };
+    
+    const reverseHigerAlphabet = Object.fromEntries(
+        Object.entries(higerAlphabet).map(([key, value]) => [value, key])
+    );
+
+    // --- DOM ELEMENTLERİNİ SEÇME ---
+    const turkceInput = document.getElementById('turkceInput');
+    const higerInput = document.getElementById('higerInput');
+    const encryptBtn = document.getElementById('encryptBtn');
+    const decryptBtn = document.getElementById('decryptBtn');
+    const higerOutput = document.getElementById('higerOutput');
+    const turkceOutput = document.getElementById('turkceOutput');
+    const copyHigerBtn = document.getElementById('copyHigerBtn');
+    const copyTurkceBtn = document.getElementById('copyTurkceBtn');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const sideNav = document.getElementById('sideNav');
+    const overlay = document.getElementById('overlay');
+    const alphabetGrid = document.querySelector('.alphabet-grid');
+    // Yeni eklenen elementler
+    const uploadTurkceFile = document.getElementById('uploadTurkceFile');
+    const downloadHigerFile = document.getElementById('downloadHigerFile');
+    const uploadHigerFile = document.getElementById('uploadHigerFile');
+    const downloadTurkceFile = document.getElementById('downloadTurkceFile');
+    const higerCounter = document.getElementById('higerCounter');
+    const turkceCounter = document.getElementById('turkceCounter');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // --- FONKSİYONLAR ---
+
+    /**
+     * Türkçe metni Higer Alfabesi'ne çevirir (SAYAÇLI VERSİYON).
+     */
+    function encryptText() {
+        const text = turkceInput.value.toLocaleUpperCase('tr');
+        if (!text) {
+            higerOutput.textContent = '';
+            higerCounter.textContent = '';
+            return;
+        }
+
+        const characters = text.split('');
+        const encryptedChars = [];
+
+        for (const char of characters) {
+            if (higerAlphabet[char]) {
+                encryptedChars.push(higerAlphabet[char]);
+            } else if (char === ' ') {
+                if (encryptedChars.length > 0 && encryptedChars[encryptedChars.length - 1] !== '.') {
+                     encryptedChars.push('.');
+                }
+            }
+        }
+        
+        let result = encryptedChars.join('.').replace(/\.{2,}/g, '.').replace(/^\.|\.$/g, '');
+
+        higerOutput.textContent = result;
+        higerOutput.classList.remove('error');
+        
+        const codeCount = result ? result.split('.').filter(c => c).length : 0;
+        higerCounter.textContent = `(${turkceInput.value.length} karakter → ${codeCount} kod)`;
+    }
+
+    /**
+     * Higer Alfabesi kodlarını Türkçe metne çevirir (SAYAÇLI VERSİYON).
+     */
+    function decryptText() {
+        const text = higerInput.value.trim();
+        if (!text) {
+            turkceOutput.textContent = '';
+            turkceCounter.textContent = '';
+            return;
+        }
+
+        const codes = text.split('.');
+        let decryptedText = '';
+        let hasError = false;
+
+        for (const code of codes) {
+            if(code === '') continue;
+            
+            if (reverseHigerAlphabet[code]) {
+                decryptedText += reverseHigerAlphabet[code];
+            } else {
+                decryptedText = `Geçersiz kod bulundu: "${code}"`;
+                hasError = true;
+                break;
+            }
+        }
+
+        turkceOutput.textContent = decryptedText;
+        if (hasError) {
+            turkceOutput.classList.add('error');
+            turkceCounter.textContent = '';
+        } else {
+            turkceOutput.classList.remove('error');
+            const inputCodeCount = text.split('.').filter(c => c).length;
+            turkceCounter.textContent = `(${inputCodeCount} kod → ${decryptedText.length} karakter)`;
+        }
+    }
+
+    /**
+     * Metni panoya kopyalar ve kullanıcıya bildirim gösterir.
+     */
+    function copyToClipboard(text, button) {
+        if (!text || text.startsWith('Geçersiz')) {
+            alert('Kopyalanacak geçerli bir içerik yok!');
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Kopyalandı!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 1500);
+        }).catch(err => {
+            console.error('Kopyalama başarısız oldu: ', err);
+            alert('Kopyalama başarısız oldu.');
+        });
+    }
+    
+    /**
+     * Alfabe tablosunu dinamik olarak oluşturur.
+     */
+    function populateAlphabetTable() {
+        if (!alphabetGrid) return;
+        const sortedAlphabet = Object.entries(higerAlphabet).sort((a, b) => a[0].localeCompare(b[0], 'tr'));
+
+        for (const [char, code] of sortedAlphabet) {
+            const item = document.createElement('div');
+            item.className = 'alphabet-item';
+            item.innerHTML = `<span class="char">${char}</span> → <span class="code">${code}</span>`;
+            alphabetGrid.appendChild(item);
+        }
+    }
+
+    /**
+     * Hamburger menüyü açıp kapatır.
+     */
+    function toggleMenu() {
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    /**
+     * Yüklenen dosyayı okur ve ilgili textarea'ya yazar.
+     */
+    function handleFileUpload(event, targetTextarea) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            targetTextarea.value = e.target.result;
+            targetTextarea.dispatchEvent(new Event('input'));
+        };
+        reader.readAsText(file);
+        event.target.value = ''; 
+    }
+
+    /**
+     * Verilen metni bir .txt dosyası olarak indirir.
+     */
+    function handleDownload(text, filename) {
+        if (!text || text.startsWith('Geçersiz')) {
+            alert('İndirilecek geçerli bir içerik yok!');
+            return;
+        }
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+
+    // --- OLAY DİNLEYİCİLERİ (EVENT LISTENERS) ---
+    encryptBtn.addEventListener('click', encryptText);
+    decryptBtn.addEventListener('click', decryptText);
+
+    turkceInput.addEventListener('input', encryptText);
+    higerInput.addEventListener('input', decryptText);
+
+    copyHigerBtn.addEventListener('click', () => copyToClipboard(higerOutput.textContent, copyHigerBtn));
+    copyTurkceBtn.addEventListener('click', () => copyToClipboard(turkceOutput.textContent, copyTurkceBtn));
+    
+    hamburgerMenu.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+    
+    // Yeni özelliklerin olay dinleyicileri
+    uploadTurkceFile.addEventListener('change', (e) => handleFileUpload(e, turkceInput));
+    downloadHigerFile.addEventListener('click', () => handleDownload(higerOutput.textContent, 'higer_sifre.txt'));
+
+    uploadHigerFile.addEventListener('change', (e) => handleFileUpload(e, higerInput));
+    downloadTurkceFile.addEventListener('click', () => handleDownload(turkceOutput.textContent, 'turkce_cozum.txt'));
+    
+    themeToggle.addEventListener('change', () => {
+        if (themeToggle.checked) {
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('higerTheme', 'dark');
+        } else {
+            document.body.classList.add('light-mode');
+            localStorage.setItem('higerTheme', 'light');
+        }
+    });
+
+
+    // --- BAŞLANGIÇ İŞLEMLERİ ---
+    
+    // Kayıtlı temayı kontrol et ve uygula
+    const savedTheme = localStorage.getItem('higerTheme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.checked = false;
+    } else {
+        document.body.classList.remove('light-mode');
+        themeToggle.checked = true;
+    }
+    
+    populateAlphabetTable();
+});
+    </script></body></html>
+    
